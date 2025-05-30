@@ -1,5 +1,5 @@
 loadstring([[
---// Grow a Garden - Tr1X Macabro Menu V1.0 \\--
+--==[ Tr1X Macabro Menu - Grow a Garden ]]==--
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -34,17 +34,17 @@ local function createButton(name, parent, text, pos, size)
     btn.Font = Enum.Font.GothamBold
     btn.TextSize = 20
     btn.TextColor3 = Color3.fromRGB(255, 0, 255)
-    btn.BackgroundColor3 = Color3.fromRGB(30, 0, 40)
+    btn.BackgroundColor3 = Color3.fromRGB(20, 0, 30)
     btn.BorderSizePixel = 0
     btn.Position = pos
-    btn.Size = size or UDim2.new(0, 200, 0, 45)
+    btn.Size = size or UDim2.new(0, 250, 0, 45)
     btn.AutoButtonColor = false
 
     btn.MouseEnter:Connect(function()
-        btn.BackgroundColor3 = Color3.fromRGB(60, 0, 80)
+        btn.BackgroundColor3 = Color3.fromRGB(50, 0, 70)
     end)
     btn.MouseLeave:Connect(function()
-        btn.BackgroundColor3 = Color3.fromRGB(30, 0, 40)
+        btn.BackgroundColor3 = Color3.fromRGB(20, 0, 30)
     end)
 
     btn.MouseButton1Click:Connect(function()
@@ -65,18 +65,19 @@ mainFrame.Name = "MainFrame"
 mainFrame.Parent = screenGui
 mainFrame.BackgroundColor3 = Color3.fromRGB(20, 0, 30)
 mainFrame.BorderSizePixel = 0
-mainFrame.Size = UDim2.new(0, 380, 0, 400)
-mainFrame.Position = UDim2.new(0.5, -190, 0.5, -200)
+mainFrame.Size = UDim2.new(0, 320, 0, 380)
+mainFrame.Position = UDim2.new(0.5, -160, 0.5, -190)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.ClipsDescendants = true
 
 -- Título com tag macabra
 local title = Instance.new("TextLabel")
 title.Parent = mainFrame
 title.BackgroundTransparency = 1
-title.Size = UDim2.new(1, 0, 0, 50)
+title.Size = UDim2.new(1, 0, 0, 55)
 title.Position = UDim2.new(0, 0, 0, 0)
 title.Font = Enum.Font.GothamBlack
-title.TextSize = 30
+title.TextSize = 32
 title.TextColor3 = Color3.fromRGB(180, 0, 200)
 title.TextStrokeTransparency = 0
 title.TextStrokeColor3 = Color3.new(0,0,0)
@@ -87,23 +88,23 @@ title.TextXAlignment = Enum.TextXAlignment.Center
 local minimizeBtn = Instance.new("TextButton")
 minimizeBtn.Name = "MinimizeBtn"
 minimizeBtn.Parent = mainFrame
-minimizeBtn.Size = UDim2.new(0, 35, 0, 35)
-minimizeBtn.Position = UDim2.new(1, -40, 0, 7)
+minimizeBtn.Size = UDim2.new(0, 40, 0, 40)
+minimizeBtn.Position = UDim2.new(1, -50, 0, 8)
 minimizeBtn.BackgroundColor3 = Color3.fromRGB(100, 0, 130)
 minimizeBtn.TextColor3 = Color3.new(1,1,1)
 minimizeBtn.Font = Enum.Font.GothamBold
-minimizeBtn.TextSize = 22
+minimizeBtn.TextSize = 24
 minimizeBtn.Text = "—"
 
--- Container para botões (baixo do título)
+-- Container para botões
 local buttonHolder = Instance.new("Frame")
 buttonHolder.Name = "ButtonHolder"
 buttonHolder.Parent = mainFrame
 buttonHolder.BackgroundTransparency = 1
-buttonHolder.Position = UDim2.new(0, 10, 0, 60)
-buttonHolder.Size = UDim2.new(1, -20, 1, -70)
+buttonHolder.Position = UDim2.new(0, 15, 0, 65)
+buttonHolder.Size = UDim2.new(1, -30, 1, -80)
 
--- Mensagem sinistra
+-- Label para mensagens grosseiras
 local statusLabel = Instance.new("TextLabel")
 statusLabel.Parent = mainFrame
 statusLabel.BackgroundTransparency = 1
@@ -113,20 +114,19 @@ statusLabel.Font = Enum.Font.GothamBold
 statusLabel.TextSize = 18
 statusLabel.TextColor3 = Color3.fromRGB(220, 0, 220)
 statusLabel.TextXAlignment = Enum.TextXAlignment.Center
-statusLabel.Text = "Você está no controle, seu liso."
+statusLabel.Text = "Seu liso, bora ficar rico ou vai continuar chupando dedo?"
 
--- Estado do menu (minimizado ou não)
 local minimized = false
 minimizeBtn.MouseButton1Click:Connect(function()
     playSound(SoundIds.click)
     if minimized then
-        mainFrame.Size = UDim2.new(0, 380, 0, 400)
+        mainFrame.Size = UDim2.new(0, 320, 0, 380)
         buttonHolder.Visible = true
         statusLabel.Visible = true
         minimizeBtn.Text = "—"
         minimized = false
     else
-        mainFrame.Size = UDim2.new(0, 200, 0, 50)
+        mainFrame.Size = UDim2.new(0, 180, 0, 50)
         buttonHolder.Visible = false
         statusLabel.Visible = false
         minimizeBtn.Text = "+"
@@ -134,75 +134,92 @@ minimizeBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Função para encontrar player próximo
-local function getClosestPlayer(radius)
-    radius = radius or 25
-    local closest = nil
-    local closestDist = radius
-    if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then return nil end
-    local hrp = LocalPlayer.Character.HumanoidRootPart.Position
-    for _, plr in pairs(Players:GetPlayers()) do
-        if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-            local dist = (plr.Character.HumanoidRootPart.Position - hrp).Magnitude
-            if dist < closestDist then
-                closestDist = dist
-                closest = plr
-            end
-        end
-    end
-    return closest
-end
-
--- Evento remoto para roubar fruta (confira o nome real)
-local stealFruitEvent = ReplicatedStorage:WaitForChild("StealFruit")
-
--- Função pra tentar roubar Pepper Seed do player próximo
-local function stealPepperSeed()
-    local target = getClosestPlayer(25)
-    if target then
-        local success, err = pcall(function()
-            stealFruitEvent:FireServer(target, "Pepper Seed")
-        end)
-        if success then
-            playSound(SoundIds.success)
-            statusLabel.Text = "Pronto seu liso fudido, roubou Pepper Seed do "..target.Name.."! Vamo faturar!"
-        else
-            playSound(SoundIds.error)
-            statusLabel.Text = "Erro ao roubar: "..(err or "Unknown error")
-        end
-    else
-        playSound(SoundIds.error)
-        statusLabel.Text = "Nenhum alvo perto pra roubar a Pepper Seed."
-    end
-end
-
--- Função spoofing (simula gamepass)
-local spoofingActive = false
-local function toggleSpoofing()
-    spoofingActive = not spoofingActive
-    if spoofingActive then
-        statusLabel.Text = "Spoofing ativado! Agora você é o rei do roubo!"
+-- Função para spawnar sementes direto no inventário (exemplo)
+local function spawnSeed(seedName)
+    local success, err = pcall(function()
+        local addSeedEvent = ReplicatedStorage:FindFirstChild("AddSeed") or ReplicatedStorage:WaitForChild("AddSeed")
+        addSeedEvent:FireServer(seedName)
+    end)
+    if success then
         playSound(SoundIds.success)
+        statusLabel.Text = "Tá vendo, liso? Spawnou "..seedName.." no inventário. Fica esperto!"
     else
-        statusLabel.Text = "Spoofing desativado. Volte a ser pobre."
         playSound(SoundIds.error)
+        statusLabel.Text = "Erro pra spawnar "..seedName..": "..(err or "unknown")
     end
 end
 
--- Criar botões no menu
-local stealBtn = createButton("StealPepper", buttonHolder, "Roubar Pepper Seed Próximo", UDim2.new(0, 0, 0, 0))
-stealBtn.MouseButton1Click:Connect(stealPepperSeed)
+-- Função para coletar dinheiro automático (exemplo - simula coletar)
+local autoCollecting = false
+local autoCollectBtn
 
-local spoofBtn = createButton("SpoofBtn", buttonHolder, "Toggle Spoofing (Gamepass)", UDim2.new(0, 0, 0, 55))
-spoofBtn.MouseButton1Click:Connect(toggleSpoofing)
+local function toggleAutoCollect()
+    autoCollecting = not autoCollecting
+    if autoCollecting then
+        statusLabel.Text = "Auto coleta ligado. Para de ficar parado aí, seu liso!"
+        playSound(SoundIds.success)
+        spawnSeed("Carrot Seed") -- só pra zoar, spawnar uma semente toda vez que liga
+        -- Simula coleta automática (vai melhorando com evento real)
+        spawn(function()
+            while autoCollecting do
+                wait(5)
+                -- Exemplo: você pode chamar o evento real do jogo pra coletar moeda aqui
+                print("Coletando dinheiro automaticamente...")
+            end
+        end)
+        autoCollectBtn.Text = "Auto Coleta: ON"
+    else
+        statusLabel.Text = "Auto coleta desligado. Vai trabalhar, seu liso!"
+        playSound(SoundIds.error)
+        autoCollectBtn.Text = "Auto Coleta: OFF"
+    end
+end
 
--- Lógica de spoofing (mock de gamepass)
--- Se quiser, pode expandir aqui pra simular direito o gamepass
+-- Botões principais do menu
+local spawnCarrotBtn = createButton("SpawnCarrot", buttonHolder, "Spawn Carrot Seed", UDim2.new(0,0,0,0))
+spawnCarrotBtn.MouseButton1Click:Connect(function()
+    spawnSeed("Carrot Seed")
+end)
 
--- Dica para o usuário (vai na aba status)
-statusLabel.Text = "Use com cuidado, seu liso. Ficar rico nunca foi tão sinistro."
+local spawnPepperBtn = createButton("SpawnPepper", buttonHolder, "Spawn Pepper Seed", UDim2.new(0,0,0,55))
+spawnPepperBtn.MouseButton1Click:Connect(function()
+    spawnSeed("Pepper Seed")
+end)
 
--- Final do script
-print("Tr1X Macabro Menu carregado. Boa sorte, malandro!")
+autoCollectBtn = createButton("AutoCollectBtn", buttonHolder, "Auto Coleta: OFF", UDim2.new(0,0,0,110))
+autoCollectBtn.MouseButton1Click:Connect(toggleAutoCollect)
+
+-- Função para zoar o usuário com mensagens grosseiras randomizadas
+local insults = {
+    "Seu liso, para de perder tempo e vai trabalhar!",
+    "Bora ficar rico, ou vai continuar chupando dedo?",
+    "Tá esperando o quê? Dinheiro não cai do céu, seu liso!",
+    "Para de reclamar e começa a fazer grana, seu preguiçoso!",
+    "Seus inimigos tão rindo da sua cara, levanta daí!"
+}
+
+local insultLabel = Instance.new("TextLabel")
+insultLabel.Parent = mainFrame
+insultLabel.BackgroundTransparency = 1
+insultLabel.Size = UDim2.new(1, 0, 0, 40)
+insultLabel.Position = UDim2.new(0, 0, 1, -85)
+insultLabel.Font = Enum.Font.GothamBold
+insultLabel.TextSize = 16
+insultLabel.TextColor3 = Color3.fromRGB(255, 0, 255)
+insultLabel.TextStrokeTransparency = 0.5
+insultLabel.TextStrokeColor3 = Color3.new(0,0,0)
+insultLabel.TextXAlignment = Enum.TextXAlignment.Center
+insultLabel.Text = insults[math.random(#insults)]
+
+-- Atualiza insulto a cada 10 segundos
+spawn(function()
+    while true do
+        wait(10)
+        insultLabel.Text = insults[math.random(#insults)]
+    end
+end)
+
+-- Mensagem final ao carregar o menu
+print("Tr1X Macabro Menu carregado! Bora ficar bilionário no Grow a Garden!")
 
 ]])()
