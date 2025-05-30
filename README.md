@@ -1,116 +1,134 @@
---[[
-MACABRO MENU VIRAL v1.0 - Grow a Garden Script (200 linhas)
-Script feito para dominar o jogo com estilo grotesco e brutal.
-Criado por ChatGPT com toque demoníaco, revisado 5x como pedido.
-]]--
+-- Tr1X Menu Macabro vFinalizado 💀
+local plr = game.Players.LocalPlayer
+local sheckles = plr:FindFirstChild("Sheckles") or plr:WaitForChild("Sheckles")
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "Tr1X_MacabraUI"
+local uis = game:GetService("UserInputService")
+local runService = game:GetService("RunService")
+local sound = Instance.new("Sound", gui)
+sound.SoundId = "rbxassetid://4590657391"
+sound.Volume = 1
 
-local Player = game.Players.LocalPlayer
-local Gui = Instance.new("ScreenGui")
-Gui.Name = "VirusMacabro"
-Gui.ResetOnSpawn = false
-Gui.Parent = Player:WaitForChild("PlayerGui")
-
-local Open = true
-local function Blimp(text)
-    local label = Instance.new("TextLabel", Gui)
-    label.Text = text
-    label.Size = UDim2.new(0.6, 0, 0.1, 0)
-    label.Position = UDim2.new(0.2, 0, 0.9, 0)
-    label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    label.TextColor3 = Color3.new(1, 0, 0)
-    label.TextScaled = true
-    label.Font = Enum.Font.Arcade
-    game:GetService("Debris"):AddItem(label, 3)
+-- ESTILO SUJO
+local function makeLabel(text, parent)
+	local l = Instance.new("TextLabel", parent)
+	l.BackgroundColor3 = Color3.fromRGB(30, 0, 30)
+	l.TextColor3 = Color3.fromRGB(255, 0, 255)
+	l.Font = Enum.Font.Arcade
+	l.TextScaled = true
+	l.Size = UDim2.new(1, 0, 0, 30)
+	l.BorderSizePixel = 0
+	l.Text = text
+	return l
 end
 
-local Frame = Instance.new("Frame", Gui)
-Frame.Size = UDim2.new(0, 500, 0, 400)
-Frame.Position = UDim2.new(0.25, 0, 0.25, 0)
-Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-Frame.BorderSizePixel = 5
-Frame.BorderColor3 = Color3.fromRGB(255, 0, 0)
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 400, 0, 300)
+frame.Position = UDim2.new(0.5, -200, 0.5, -150)
+frame.BackgroundColor3 = Color3.fromRGB(15, 0, 15)
+frame.BorderSizePixel = 0
 
-local Title = Instance.new("TextLabel", Frame)
-Title.Size = UDim2.new(1, 0, 0.15, 0)
-Title.Text = "TR1X VIRAL MENU - SOFRIMENTO INICIADO"
-Title.TextColor3 = Color3.fromRGB(255, 0, 0)
-Title.BackgroundTransparency = 1
-Title.TextScaled = true
-Title.Font = Enum.Font.Arcade
+local title = makeLabel("💀 Tr1X MENU MACABRO 💀", frame)
+title.Size = UDim2.new(1, 0, 0, 40)
 
-local MinBtn = Instance.new("TextButton", Frame)
-MinBtn.Size = UDim2.new(0, 100, 0, 30)
-MinBtn.Position = UDim2.new(1, -105, 0, 5)
-MinBtn.Text = "MINIMIZAR"
-MinBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
-MinBtn.TextColor3 = Color3.new(1, 1, 1)
-MinBtn.MouseButton1Click:Connect(function()
-    Open = not Open
-    for _, child in pairs(Frame:GetChildren()) do
-        if child ~= MinBtn and child ~= Title then
-            child.Visible = Open
-        end
-    end
-    MinBtn.Text = Open and "MINIMIZAR" or "RESTORE"
+local tabs = Instance.new("Frame", frame)
+tabs.Size = UDim2.new(0, 100, 1, -40)
+tabs.Position = UDim2.new(0, 0, 0, 40)
+tabs.BackgroundColor3 = Color3.fromRGB(40, 0, 40)
+
+local content = Instance.new("Frame", frame)
+content.Size = UDim2.new(1, -100, 1, -40)
+content.Position = UDim2.new(0, 100, 0, 40)
+content.BackgroundColor3 = Color3.fromRGB(20, 0, 20)
+
+-- Minimizar botão
+local miniBtn = Instance.new("TextButton", title)
+miniBtn.Size = UDim2.new(0, 30, 1, 0)
+miniBtn.Position = UDim2.new(1, -30, 0, 0)
+miniBtn.Text = "-"
+miniBtn.TextColor3 = Color3.new(1, 0, 1)
+miniBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 50)
+miniBtn.Font = Enum.Font.SourceSansBold
+miniBtn.TextScaled = true
+miniBtn.MouseButton1Click:Connect(function()
+	content.Visible = not content.Visible
+	sound:Play()
 end)
 
-local function CreateBtn(text, y, callback)
-    local btn = Instance.new("TextButton", Frame)
-    btn.Size = UDim2.new(0.9, 0, 0, 40)
-    btn.Position = UDim2.new(0.05, 0, y, 0)
-    btn.Text = text
-    btn.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
-    btn.TextColor3 = Color3.new(1, 0, 0)
-    btn.TextScaled = true
-    btn.Font = Enum.Font.SciFi
-    btn.MouseButton1Click:Connect(callback)
+-- Cria abas e painéis
+local panels = {}
+local function createTab(name)
+	local btn = Instance.new("TextButton", tabs)
+	btn.Size = UDim2.new(1, 0, 0, 30)
+	btn.Text = name
+	btn.TextColor3 = Color3.new(1, 0, 1)
+	btn.Font = Enum.Font.SourceSansBold
+	btn.BackgroundColor3 = Color3.fromRGB(50, 0, 50)
+	btn.TextScaled = true
+
+	local panel = Instance.new("Frame", content)
+	panel.Name = name
+	panel.Size = UDim2.new(1, 0, 1, 0)
+	panel.BackgroundTransparency = 1
+	panel.Visible = false
+	panels[name] = panel
+
+	btn.MouseButton1Click:Connect(function()
+		for k, v in pairs(panels) do v.Visible = false end
+		panel.Visible = true
+		sound:Play()
+	end)
 end
 
--- Função para printar insultos kkkkk
-local function xingar()
-    Blimp("Seu liso fedido, vai trabalhar n eh???")
-    print("[TR1X MENU]: Jogador xingado com sucesso")
-end
+createTab("Home")
+createTab("Risk")
 
--- Modo rico
-local function dinheiroMaldito()
-    Blimp("Farm de dinheirinho sujo começado, aproveita seu corno")
-    while wait(1) do
-        local args = {
-            [1] = "Sell",
-            [2] = "Pepper Seed"
-        }
-        game:GetService("ReplicatedStorage").RemoteFunction:InvokeServer(unpack(args))
-    end
-end
+-- Conteúdo Home
+local h = panels["Home"]
+local label = makeLabel("Seja bem-vindo ao inferno digital", h)
+label.Size = UDim2.new(1, 0, 0, 50)
 
--- Botão de farm
-CreateBtn("ATIVAR FARM PODRE", 0.2, dinheiroMaldito)
-CreateBtn("ME XINGA PQ EU MEREÇO", 0.35, xingar)
+local insult = makeLabel("Seu liso fudido, vai farmar", h)
+insult.Position = UDim2.new(0, 0, 0, 60)
+insult.Size = UDim2.new(1, 0, 0, 50)
 
--- Spoofing fake
-CreateBtn("[SPOOFING] FODA-SE A SEGURANÇA", 0.5, function()
-    Blimp("Spoofing ativado, mas n muda porra nenhuma KKKKK")
+-- Conteúdo Risk
+local r = panels["Risk"]
+local lazyBtn = Instance.new("TextButton", r)
+lazyBtn.Size = UDim2.new(1, -20, 0, 50)
+lazyBtn.Position = UDim2.new(0, 10, 0, 10)
+lazyBtn.Text = "Sou Preguiçoso (Ativar)"
+lazyBtn.TextColor3 = Color3.new(1, 0, 1)
+lazyBtn.Font = Enum.Font.SourceSansBold
+lazyBtn.TextScaled = true
+lazyBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 50)
+
+-- Sistema de farm nojento
+local loopActive = false
+local loop
+
+lazyBtn.MouseButton1Click:Connect(function()
+	loopActive = not loopActive
+	sound:Play()
+	if loopActive then
+		lazyBtn.Text = "Sou Preguiçoso (Desativar)"
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Pronto seu liso 😈",
+			Text = "Vai roubar, trabalhar não dá futuro.",
+			Duration = 4
+		})
+		loop = runService.RenderStepped:Connect(function(dt)
+			if tick() % 2 < 0.03 then
+				if sheckles and sheckles.Value then
+					sheckles.Value = sheckles.Value + 5000000
+				end
+			end
+		end)
+	else
+		lazyBtn.Text = "Sou Preguiçoso (Ativar)"
+		if loop then loop:Disconnect() end
+	end
 end)
 
--- Gamepass roubada
-CreateBtn("ATIVA GAMEPASS DO SATANÁS", 0.65, function()
-    Blimp("Gamepass injetada. Vai roubar fruta agora seu verme")
-    local spoof = Instance.new("BoolValue")
-    spoof.Name = "OwnsGamepass_Thief"
-    spoof.Value = true
-    spoof.Parent = Player
-end)
-
--- Brincadeira final
-CreateBtn("SAIR DO MENU (COVARDE)", 0.8, function()
-    Blimp("Fraco. Saiu do menu. Volta quando for homem")
-    Gui:Destroy()
-end)
-
--- Sons para assustar
-local Sound = Instance.new("Sound", Gui)
-Sound.SoundId = "rbxassetid://138186576" -- som macabro
-Sound.Volume = 1
-Sound.Looped = true
-Sound:Play()
+-- Mostra aba inicial
+panels["Home"].Visible = true
